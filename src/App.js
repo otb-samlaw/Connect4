@@ -31,7 +31,7 @@ class App extends React.Component {
         {this.state.invalidGuess && <ErrorFeedback />}
         {this.state.guessedHiddenWord && <Victory />}
         {this.state.guessesRemaining === 0 && !this.state.guessedHiddenWord && (
-          <Lose />
+          <Lose tryAgainFn={this.resetWithSameWord} />
         )}
       </div>
     );
@@ -59,18 +59,6 @@ class App extends React.Component {
         return { guessedHiddenWord: true };
       });
     }
-  };
-
-  getBullsAndCows = guess => {
-    const guessArr = guess.split("");
-    const wordArr = this.state.hiddenWord.split("");
-    let bulls = 0;
-    let cows = 0;
-    guessArr.forEach((guessLetter, index) => {
-      if (guessLetter === wordArr[index]) bulls++;
-      else if (wordArr.includes(guessLetter)) cows++;
-    });
-    return [bulls, cows];
   };
 
   isValidGuess = guess => {
@@ -126,10 +114,34 @@ class App extends React.Component {
     return validIsogram;
   };
 
+  getBullsAndCows = guess => {
+    const guessArr = guess.split("");
+    const wordArr = this.state.hiddenWord.split("");
+    let bulls = 0;
+    let cows = 0;
+    guessArr.forEach((guessLetter, index) => {
+      if (guessLetter === wordArr[index]) bulls++;
+      else if (wordArr.includes(guessLetter)) cows++;
+    });
+    return [bulls, cows];
+  };
+
   sendGuessFromInputToApp = event => {
     if (event.key === "Enter" && this.state.guessesRemaining > 0) {
       this.processGuess(event.target.value);
     }
+  };
+
+  resetWithSameWord = event => {
+    this.setState(prevState => {
+      return {
+        guessesRemaining: 12,
+        invalidGuess: false,
+        guessedHiddenWord: false,
+        bulls: 0,
+        cows: 0
+      };
+    });
   };
 }
 
