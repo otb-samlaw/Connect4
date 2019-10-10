@@ -32,8 +32,11 @@ class App extends React.Component {
         return { invalidGuess: true };
       });
     } else {
-      this.setState(() => {
-        return { invalidGuess: false };
+      this.setState(prevState => {
+        return {
+          guessesRemaining: prevState.guessesRemaining - 1,
+          invalidGuess: false
+        };
       });
     }
   };
