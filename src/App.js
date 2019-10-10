@@ -4,6 +4,7 @@ import Instructions from "./Components/instructions";
 import ErrorFeedback from "./Components/errorFeedback";
 import Victory from "./Components/victory";
 import Lose from "./Components/youLose";
+import GuessFeedback from "./Components/guessFeedback";
 
 class App extends React.Component {
   state = {
@@ -11,7 +12,9 @@ class App extends React.Component {
     hiddenWordLength: 5,
     guessesRemaining: 12,
     invalidGuess: false,
-    guessedHiddenWord: false
+    guessedHiddenWord: false,
+    bulls: 0,
+    cows: 0
   };
 
   render() {
@@ -24,6 +27,7 @@ class App extends React.Component {
           sendGuessFromInputToApp={this.sendGuessFromInputToApp}
           guessesRemaining={this.state.guessesRemaining}
         />
+        <GuessFeedback bulls={this.state.bulls} cows={this.state.cows} />
         {this.state.invalidGuess && <ErrorFeedback />}
         {this.state.guessedHiddenWord && <Victory />}
         {this.state.guessesRemaining === 0 && !this.state.guessedHiddenWord && (
@@ -40,10 +44,13 @@ class App extends React.Component {
         return { invalidGuess: true };
       });
     } else {
+      const [bulls, cows] = this.getBullsAndCows(guess);
       this.setState(prevState => {
         return {
           guessesRemaining: prevState.guessesRemaining - 1,
-          invalidGuess: false
+          invalidGuess: false,
+          bulls: bulls,
+          cows: cows
         };
       });
     }
@@ -52,6 +59,18 @@ class App extends React.Component {
         return { guessedHiddenWord: true };
       });
     }
+  };
+
+  getBullsAndCows = guess => {
+    const guessArr = guess.split("");
+    const wordArr = this.state.hiddenWord.split("");
+    let bulls = 0;
+    let cows = 0;
+    guessArr.forEach((guessLetter, index) => {
+      if (guessLetter === wordArr[index]) bulls++;
+      else if (wordArr.includes(guessLetter)) cows++;
+    });
+    return [bulls, cows];
   };
 
   isValidGuess = guess => {
