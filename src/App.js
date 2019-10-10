@@ -1,12 +1,14 @@
 import React from "react";
 import GuessInput from "./Components/guessInput";
 import Instructions from "./Components/instructions";
+import ErrorFeedback from "./Components/errorFeedback";
 
 class App extends React.Component {
   state = {
     hiddenWord: "quote",
     hiddenWordLength: 5,
-    guessesRemaining: 12
+    guessesRemaining: 12,
+    invalidGuess: false
   };
 
   render() {
@@ -18,12 +20,33 @@ class App extends React.Component {
           hiddenWordLength={this.state.hiddenWordLength}
           sendGuessFromInputToApp={this.sendGuessFromInputToApp}
         />
+        {this.state.invalidGuess && <ErrorFeedback />}
       </div>
     );
   }
 
   processGuess = guess => {
-    console.log("Processing guess ", guess);
+    // const hiddenWord = this.state.hiddenWord;
+    if (!this.isValidIsogram(guess)) {
+      this.setState(() => {
+        return { invalidGuess: true };
+      });
+    } else {
+      this.setState(() => {
+        return { invalidGuess: false };
+      });
+    }
+  };
+
+  isValidIsogram = guess => {
+    const strArr = guess.split("");
+    let foundInvalid = false;
+    strArr.forEach(letter => {
+      if (!/[a-z]/.test(letter.toLowerCase())) {
+        foundInvalid = true;
+      }
+    });
+    return !foundInvalid;
   };
 
   sendGuessFromInputToApp = event => {
