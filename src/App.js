@@ -27,7 +27,7 @@ class App extends React.Component {
 
   processGuess = guess => {
     // const hiddenWord = this.state.hiddenWord;
-    if (!this.isValidIsogram(guess)) {
+    if (!this.isValidGuess(guess)) {
       this.setState(() => {
         return { invalidGuess: true };
       });
@@ -38,15 +38,57 @@ class App extends React.Component {
     }
   };
 
-  isValidIsogram = guess => {
+  isValidGuess = guess => {
+    guess = guess.toLowerCase();
     const strArr = guess.split("");
     let foundInvalid = false;
     strArr.forEach(letter => {
-      if (!/[a-z]/.test(letter.toLowerCase())) {
+      if (strArr.length !== 5) foundInvalid = true;
+      else if (!/[a-z]/.test(letter)) {
         foundInvalid = true;
-      }
+      } else if (!this.isIsogram(strArr)) foundInvalid = true;
     });
     return !foundInvalid;
+  };
+
+  isIsogram = strArr => {
+    let lettersNotUsed = [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n",
+      "o",
+      "p",
+      "q",
+      "r",
+      "s",
+      "t",
+      "u",
+      "v",
+      "w",
+      "x",
+      "y",
+      "z"
+    ];
+    let validIsogram = true;
+    strArr.forEach(letter => {
+      if (lettersNotUsed.includes(letter)) {
+        lettersNotUsed = lettersNotUsed.filter(thisLetter => {
+          return thisLetter !== letter;
+        });
+      } else validIsogram = false;
+    });
+    return validIsogram;
   };
 
   sendGuessFromInputToApp = event => {
