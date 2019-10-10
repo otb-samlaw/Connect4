@@ -2,13 +2,15 @@ import React from "react";
 import GuessInput from "./Components/guessInput";
 import Instructions from "./Components/instructions";
 import ErrorFeedback from "./Components/errorFeedback";
+import Victory from "./Components/victory";
 
 class App extends React.Component {
   state = {
     hiddenWord: "quote",
     hiddenWordLength: 5,
     guessesRemaining: 12,
-    invalidGuess: false
+    invalidGuess: false,
+    guessedHiddenWord: false
   };
 
   render() {
@@ -21,6 +23,7 @@ class App extends React.Component {
           sendGuessFromInputToApp={this.sendGuessFromInputToApp}
         />
         {this.state.invalidGuess && <ErrorFeedback />}
+        {this.state.guessedHiddenWord && <Victory />}
       </div>
     );
   }
@@ -37,6 +40,11 @@ class App extends React.Component {
           guessesRemaining: prevState.guessesRemaining - 1,
           invalidGuess: false
         };
+      });
+    }
+    if (guess === this.state.hiddenWord) {
+      this.setState(() => {
+        return { guessedHiddenWord: true };
       });
     }
   };
