@@ -21,6 +21,7 @@ class App extends React.Component {
         <GuessInput
           hiddenWordLength={this.state.hiddenWordLength}
           sendGuessFromInputToApp={this.sendGuessFromInputToApp}
+          guessesRemaining={this.state.guessesRemaining}
         />
         {this.state.invalidGuess && <ErrorFeedback />}
         {this.state.guessedHiddenWord && <Victory />}
