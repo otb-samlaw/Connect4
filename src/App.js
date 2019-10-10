@@ -3,6 +3,7 @@ import GuessInput from "./Components/guessInput";
 import Instructions from "./Components/instructions";
 import ErrorFeedback from "./Components/errorFeedback";
 import Victory from "./Components/victory";
+import Lose from "./Components/youLose";
 
 class App extends React.Component {
   state = {
@@ -25,6 +26,9 @@ class App extends React.Component {
         />
         {this.state.invalidGuess && <ErrorFeedback />}
         {this.state.guessedHiddenWord && <Victory />}
+        {this.state.guessesRemaining === 0 && !this.state.guessedHiddenWord && (
+          <Lose />
+        )}
       </div>
     );
   }
@@ -104,7 +108,7 @@ class App extends React.Component {
   };
 
   sendGuessFromInputToApp = event => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && this.state.guessesRemaining > 0) {
       this.processGuess(event.target.value);
     }
   };
